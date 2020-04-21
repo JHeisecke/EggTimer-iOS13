@@ -10,22 +10,45 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    let softTime = 5
-    let mediumTime = 7
-    let hardTime = 12
+    let eggTimes = ["Soft": 300,"Medium": 420,"Hard": 720]
+    var timer: Timer!
+    var totalTime: Int = 0
 
     @IBAction func hardnessSelected(_ sender: UIButton) {
         if let text = sender.currentTitle {
-            switch text {
-            case "Hard":
-                print(12)
-            case "Medium":
-                print(7)
-            case "Soft":
-                print(5)
-            default:
-                print("Option not valid!")
+            if let time = eggTimes[text] {
+                totalTime = time
+                if timer != nil {
+                    endTimer()
+                }
+                startTimer()
+            }else{
+                print("Error! no time")
             }
         }
     }
+
+    func startTimer() {
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
+    }
+    
+    @objc func updateTime() {
+        print("\(timeFormatted(totalTime))")
+
+        if totalTime != 0 {
+            totalTime -= 1
+        } else {
+            endTimer()
+        }
+    }
+    func endTimer() {
+        timer.invalidate()
+    }
+    
+    func timeFormatted(_ totalSeconds: Int) -> String {
+        let seconds: Int = totalSeconds % 60
+        let minutes: Int = (totalSeconds / 60) % 60
+        return String(format: "%02d:%02d", minutes, seconds)
+    }
+
 }
